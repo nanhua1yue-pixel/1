@@ -10,8 +10,7 @@
       "enabled": true,
       "fallback_models": [
         "step",
-        "[薄甲逆]claude-sonnet-4-6",
-        "[特价]claude-sonnet-4-6"
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
