@@ -9,6 +9,8 @@
       "prefix": "",
       "enabled": true,
       "fallback_models": [
+        "[特价]claude-sonnet-4-6",
+        "[m]claude-sonnet-4-6-thinking",
         "kimi-k2.5",
         "step"
       ]
@@ -61,6 +63,8 @@
       "prefix": "@browser",
       "enabled": true,
       "fallback_models": [
+        "[薄甲逆]claude-sonnet-4-6",
+        "[特价]claude-sonnet-4-6",
         "kimi-k2.5",
         "Doubao-Seed-2.0-pro"
       ]
@@ -88,6 +92,8 @@
       "prefix": "",
       "enabled": true,
       "fallback_models": [
+        "[特价]claude-sonnet-4-6",
+        "[m]claude-sonnet-4-6-thinking",
         "kimi-k2.5",
         "Doubao-Seed-2.0-pro"
       ]
