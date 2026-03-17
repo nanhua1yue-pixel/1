@@ -4,15 +4,14 @@
       "name": "main",
       "description": "主调度员，负责全局任务分发和协调",
       "endpoint": "http://localhost:3000/agents/main",
-      "model": "[薄甲逆]claude-sonnet-4-6",
+      "model": "kimi-k2.5",
       "keywords": [],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
-        "[特价]claude-sonnet-4-6",
-        "[m]claude-sonnet-4-6-thinking",
-        "kimi-k2.5",
-        "step"
+        "step",
+        "[薄甲逆]claude-sonnet-4-6",
+        "[特价]claude-sonnet-4-6"
       ]
     },
     {
