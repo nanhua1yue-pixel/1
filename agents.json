@@ -1,0 +1,139 @@
+{
+  "agents": [
+    {
+      "name": "main",
+      "description": "主调度员，负责全局任务分发和协调",
+      "endpoint": "http://localhost:3000/agents/main",
+      "model": "kimi-k2.5",
+      "keywords": [],
+      "prefix": "",
+      "enabled": true
+    },
+    {
+      "name": "greet",
+      "description": "欢迎/引导 Agent，处理新用户接入和引导流程",
+      "endpoint": "http://localhost:3000/agents/greet",
+      "model": "doubao-1.5-lite-32k",
+      "keywords": ["你好", "hello", "hi", "欢迎", "新人"],
+      "prefix": "",
+      "enabled": true
+    },
+    {
+      "name": "search",
+      "description": "搜索专员，负责信息检索和数据查询",
+      "endpoint": "http://localhost:3000/agents/search",
+      "model": "gemini-3.1-pro",
+      "keywords": ["搜索", "查找", "搜一下", "search", "查询"],
+      "prefix": "@search",
+      "enabled": true
+    },
+    {
+      "name": "writer",
+      "description": "写作专员，负责文案、文档、内容生成",
+      "endpoint": "http://localhost:3000/agents/writer",
+      "model": "doubao-1.5-pro-32k",
+      "keywords": ["写", "文案", "文档", "内容", "撰写", "文章"],
+      "prefix": "@write",
+      "enabled": true
+    },
+    {
+      "name": "browser",
+      "description": "浏览器操控 Agent，执行网页自动化任务",
+      "endpoint": "http://localhost:3000/agents/browser",
+      "model": "kimi-k2.5",
+      "keywords": ["打开网页", "浏览", "网站", "browser", "爬取"],
+      "prefix": "@browser",
+      "enabled": true
+    },
+    {
+      "name": "planner",
+      "description": "规划师，负责任务拆解和战略规划",
+      "endpoint": "http://localhost:3000/agents/planner",
+      "model": "gpt-5.4",
+      "keywords": ["规划", "计划", "拆解", "plan", "战略"],
+      "prefix": "@plan",
+      "enabled": true
+    },
+    {
+      "name": "subagent-l1",
+      "description": "一级子代理，执行调度员分配的具体任务",
+      "endpoint": "http://localhost:3000/agents/subagent-l1",
+      "model": "kimi-k2.5",
+      "keywords": [],
+      "prefix": "",
+      "enabled": true
+    },
+    {
+      "name": "subagent-l2",
+      "description": "二级子代理，执行轻量级子任务",
+      "endpoint": "http://localhost:3000/agents/subagent-l2",
+      "model": "doubao-seed-2-0-mini",
+      "keywords": [],
+      "prefix": "",
+      "enabled": true
+    },
+    {
+      "name": "ops-a01",
+      "description": "运营主bot，负责竞品情报和市场分析",
+      "endpoint": "http://localhost:3000/agents/ops-a01",
+      "model": "gemini-3.1-pro",
+      "keywords": ["运营", "竞品", "情报", "市场", "yunying"],
+      "prefix": "@yunying",
+      "enabled": true
+    },
+    {
+      "name": "pur-01",
+      "description": "采购主bot，负责供应商管理和采购流程",
+      "endpoint": "http://localhost:3000/agents/pur-01",
+      "model": "deepseek-v3-2",
+      "keywords": ["采购", "供应商", "进货", "caigou"],
+      "prefix": "@caigou",
+      "enabled": true
+    },
+    {
+      "name": "fin-03",
+      "description": "财务主bot，负责财务分析和报表",
+      "endpoint": "http://localhost:3000/agents/fin-03",
+      "model": "deepseek-v3-2",
+      "keywords": ["财务", "报表", "账单", "成本", "caiwu"],
+      "prefix": "@caiwu",
+      "enabled": true
+    },
+    {
+      "name": "hr-01",
+      "description": "人事主bot，负责招聘、考勤和人员管理",
+      "endpoint": "http://localhost:3000/agents/hr-01",
+      "model": "doubao-1.5-pro-32k",
+      "keywords": ["人事", "招聘", "考勤", "hr", "员工"],
+      "prefix": "@hr",
+      "enabled": true
+    },
+    {
+      "name": "dsg-01",
+      "description": "美工主bot，负责设计、图片和视觉相关任务",
+      "endpoint": "http://localhost:3000/agents/dsg-01",
+      "model": "doubao-1.5-pro-32k",
+      "keywords": ["美工", "设计", "图片", "海报", "meigong"],
+      "prefix": "@meigong",
+      "enabled": true
+    },
+    {
+      "name": "coo-01",
+      "description": "运营官，负责全局运营决策和跨部门协调",
+      "endpoint": "http://localhost:3000/agents/coo-01",
+      "model": "gpt-5.4",
+      "keywords": ["运营官", "coo", "决策", "协调"],
+      "prefix": "@coo",
+      "enabled": true
+    },
+    {
+      "name": "dev-01",
+      "description": "程序员bot，负责编码、调试和技术实现",
+      "endpoint": "http://localhost:3000/agents/dev-01",
+      "model": "kimi-k2.5",
+      "keywords": ["开发", "代码", "编程", "dev", "bug", "调试"],
+      "prefix": "@dev",
+      "enabled": true
+    }
+  ]
+}

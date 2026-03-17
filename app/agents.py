@@ -89,46 +89,78 @@ class AgentRouter:
                 return agent
         return None
 
+    # 内部 Agent，不参与用户消息路由，只由调度员内部调用
+    INTERNAL_AGENTS = {"subagent-l1", "subagent-l2"}
+
     def route(self, text: str) -> tuple[AgentConfig, str]:
         """匹配消息到 Bot，返回 (agent, 清理后的消息)。
 
-        优先级：前缀命令 > 关键词 > fallback(general)
+        优先级：前缀命令 > 关键词 > fallback(main 调度员)
+        内部 Agent（subagent-l1/l2）不参与路由。
         """
+        routable = [a for a in self._agents if a.enabled and a.name not in self.INTERNAL_AGENTS]
+
         # 1. 前缀匹配
-        for agent in self._agents:
-            if agent.prefix and agent.enabled:
-                if text.lower().startswith(agent.prefix.lower()):
-                    return agent, agent.extract_message(text)
+        for agent in routable:
+            if agent.prefix and text.lower().startswith(agent.prefix.lower()):
+                return agent, agent.extract_message(text)
 
         # 2. 关键词匹配
-        for agent in self._agents:
+        for agent in routable:
             if agent.keywords and agent.matches(text):
                 return agent, text
 
-        # 3. Fallback 到 general
+        # 3. Fallback 到 main（主调度员）
+        main = self.get_agent("main")
+        if main and main.enabled:
+            return main, text
+
+        # 4. 兼容旧配置：尝试 general
         general = self.get_agent("general")
         if general and general.enabled:
             return general, text
 
-        # 4. 用第一个可用的
-        for agent in self._agents:
-            if agent.enabled:
-                return agent, text
+        # 5. 用第一个可路由的
+        for agent in routable:
+            return agent, text
 
         raise ValueError("没有可用的 Bot/Agent")
 
     def list_agents_markdown(self) -> str:
-        """生成 Bot 列表的 Markdown"""
-        lines = ["## 已配置的 Bot\n"]
+        """生成 Bot 列表的 Markdown，按角色分组"""
+        core = []  # 核心调度
+        biz = []   # 业务 Bot
+        internal = []  # 内部 Agent
+
         for agent in self.agents:
+            if agent.name in self.INTERNAL_AGENTS:
+                internal.append(agent)
+            elif agent.name in ("main", "greet"):
+                core.append(agent)
+            else:
+                biz.append(agent)
+
+        def _fmt(agent: AgentConfig) -> str:
             model_info = f" `[{agent.model}]`" if agent.model else ""
-            prefix_hint = f"命令: `{agent.prefix} <消息>`" if agent.prefix else ""
-            keywords_hint = f"关键词: {', '.join(agent.keywords)}" if agent.keywords else ""
-            lines.append(f"**{agent.name}**{model_info} - {agent.description}")
-            if prefix_hint or keywords_hint:
-                hints = " | ".join(filter(None, [prefix_hint, keywords_hint]))
-                lines.append(f"  {hints}")
+            line = f"- **{agent.name}**{model_info} — {agent.description}"
+            if agent.prefix:
+                line += f"\n  命令: `{agent.prefix} <消息>`"
+            return line
+
+        lines = ["## Bot 列表\n"]
+        if core:
+            lines.append("### 核心调度")
+            lines.extend(_fmt(a) for a in core)
             lines.append("")
+        if biz:
+            lines.append("### 业务 Bot")
+            lines.extend(_fmt(a) for a in biz)
+            lines.append("")
+        if internal:
+            lines.append("### 内部 Agent（仅调度员可调用）")
+            lines.extend(_fmt(a) for a in internal)
+            lines.append("")
+
         return "\n".join(lines)
 
 
