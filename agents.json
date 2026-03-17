@@ -73,13 +73,14 @@
       "name": "planner",
       "description": "规划师，负责任务拆解和战略规划",
       "endpoint": "http://localhost:3000/agents/planner",
-      "model": "[m]claude-sonnet-4-6-thinking",
+      "model": "[特价]claude-opus-4-6-thinking",
       "keywords": ["规划", "计划", "拆解", "plan", "战略"],
       "prefix": "@plan",
       "enabled": true,
       "fallback_models": [
-        "[薄甲逆]claude-sonnet-4-6",
-        "[特价]claude-sonnet-4-6",
+        "[薄甲逆]claude-opus-4-6-thinking",
+        "[cc量]claude-opus-4-6-thinking",
+        "gpt-5.4",
         "kimi-k2.5"
       ]
     },
@@ -146,7 +147,7 @@
       "prefix": "@caiwu",
       "enabled": true,
       "fallback_models": [
-        "[ANT量]claude-opus-4-6-thinking",
+        "[cc量]claude-opus-4-6-thinking",
         "deepseek-v3-2"
       ]
     },
