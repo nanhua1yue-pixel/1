@@ -106,7 +106,6 @@
       "prefix": "",
       "enabled": true,
       "fallback_models": [
-        "doubao-seed-2-0-mini",
         "kimi-k2.5"
       ]
     },
