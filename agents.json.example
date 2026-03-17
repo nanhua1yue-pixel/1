@@ -1,0 +1,49 @@
+{
+  "agents": [
+    {
+      "name": "code-reviewer",
+      "description": "代码审查 Bot，review PR 和代码片段",
+      "endpoint": "http://localhost:3000/agents/code-reviewer",
+      "model": "claude-sonnet-4-20250514",
+      "keywords": ["review", "代码审查", "看看代码"],
+      "prefix": "@review",
+      "enabled": true
+    },
+    {
+      "name": "task-planner",
+      "description": "任务规划 Bot，拆解需求为可执行子任务",
+      "endpoint": "http://localhost:3000/agents/task-planner",
+      "model": "gpt-4o",
+      "keywords": ["规划", "拆解", "计划", "plan"],
+      "prefix": "@plan",
+      "enabled": true
+    },
+    {
+      "name": "bug-fixer",
+      "description": "Bug 修复 Bot，分析问题并给出修复方案",
+      "endpoint": "http://localhost:3000/agents/bug-fixer",
+      "model": "deepseek-v3",
+      "keywords": ["bug", "修复", "报错", "出错", "fix"],
+      "prefix": "@fix",
+      "enabled": true
+    },
+    {
+      "name": "translator",
+      "description": "翻译 Bot，中英互译",
+      "endpoint": "http://localhost:3000/agents/translator",
+      "model": "gpt-4o-mini",
+      "keywords": ["翻译", "translate", "英文", "中文"],
+      "prefix": "@translate",
+      "enabled": true
+    },
+    {
+      "name": "general",
+      "description": "通用对话 Bot，处理未匹配到专项 Bot 的消息",
+      "endpoint": "http://localhost:3000/agents/general",
+      "model": "gpt-4o-mini",
+      "keywords": [],
+      "prefix": "",
+      "enabled": true
+    }
+  ]
+}
