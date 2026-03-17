@@ -180,14 +180,14 @@
       "name": "coo-01",
       "description": "运营官，负责全局运营决策和跨部门协调",
       "endpoint": "http://localhost:3000/agents/coo-01",
-      "model": "[ANT量]claude-opus-4-6-thinking",
+      "model": "kimi-k2.5",
       "keywords": ["运营官", "coo", "决策", "协调"],
       "prefix": "@coo",
       "enabled": true,
       "fallback_models": [
-        "[特价]claude-opus-4-6-thinking",
-        "gpt-5.4",
-        "kimi-k2.5"
+        "[薄甲逆]claude-sonnet-4-6",
+        "[特价]claude-sonnet-4-6",
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
