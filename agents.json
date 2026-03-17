@@ -4,26 +4,26 @@
       "name": "main",
       "description": "主调度员，负责全局任务分发和协调",
       "endpoint": "http://localhost:3000/agents/main",
-      "model": "[H2]claude-opus-4-6-thinking-fast",
+      "model": "[薄甲逆]claude-sonnet-4-6",
       "keywords": [],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
         "kimi-k2.5",
-        "doubao-1.5-pro-32k"
+        "step"
       ]
     },
     {
       "name": "greet",
       "description": "欢迎/引导 Agent，处理新用户接入和引导流程",
       "endpoint": "http://localhost:3000/agents/greet",
-      "model": "doubao-1.5-lite-32k",
+      "model": "Doubao-Seed-2.0-pro",
       "keywords": ["你好", "hello", "hi", "欢迎", "新人"],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
-        "doubao-1.5-pro-32k",
-        "kimi-k2.5"
+        "kimi-k2.5",
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
@@ -49,20 +49,20 @@
       "enabled": true,
       "fallback_models": [
         "[特价]claude-opus-4-6",
-        "doubao-1.5-pro-32k"
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
       "name": "browser",
       "description": "浏览器操控 Agent，执行网页自动化任务",
       "endpoint": "http://localhost:3000/agents/browser",
-      "model": "[A优质]gemini-3.1-pro-preview-thinking",
+      "model": "[m]claude-sonnet-4-6-thinking",
       "keywords": ["打开网页", "浏览", "网站", "browser", "爬取"],
       "prefix": "@browser",
       "enabled": true,
       "fallback_models": [
-        "[超稳]gemini-3-pro-preview-maxthinking",
-        "kimi-k2.5"
+        "kimi-k2.5",
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
@@ -83,26 +83,26 @@
       "name": "subagent-l1",
       "description": "一级子代理，执行调度员分配的具体任务",
       "endpoint": "http://localhost:3000/agents/subagent-l1",
-      "model": "[H2]claude-opus-4-6-thinking-fast",
+      "model": "[薄甲逆]claude-sonnet-4-6",
       "keywords": [],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
         "kimi-k2.5",
-        "doubao-1.5-pro-32k"
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
       "name": "subagent-l2",
       "description": "二级子代理，执行轻量级子任务",
       "endpoint": "http://localhost:3000/agents/subagent-l2",
-      "model": "doubao-1.5-lite-32k",
+      "model": "Doubao-Seed-2.0-pro",
       "keywords": [],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
         "doubao-seed-2-0-mini",
-        "doubao-1.5-pro-32k"
+        "kimi-k2.5"
       ]
     },
     {
@@ -148,26 +148,26 @@
       "name": "hr-01",
       "description": "人事主bot，负责招聘、考勤和人员管理",
       "endpoint": "http://localhost:3000/agents/hr-01",
-      "model": "doubao-1.5-pro-32k",
+      "model": "Doubao-Seed-2.0-pro",
       "keywords": ["人事", "招聘", "考勤", "hr", "员工"],
       "prefix": "@hr",
       "enabled": true,
       "fallback_models": [
         "kimi-k2.5",
-        "doubao-1.5-lite-32k"
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
       "name": "dsg-01",
       "description": "美工主bot，负责设计、图片和视觉相关任务",
       "endpoint": "http://localhost:3000/agents/dsg-01",
-      "model": "doubao-1.5-pro-32k",
+      "model": "Doubao-Seed-2.0-pro",
       "keywords": ["美工", "设计", "图片", "海报", "meigong"],
       "prefix": "@meigong",
       "enabled": true,
       "fallback_models": [
         "kimi-k2.5",
-        "doubao-1.5-lite-32k"
+        "Doubao-Seed-2.0-pro"
       ]
     },
     {
