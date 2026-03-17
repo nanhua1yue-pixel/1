@@ -4,12 +4,12 @@
       "name": "main",
       "description": "主调度员，负责全局任务分发和协调",
       "endpoint": "http://localhost:3000/agents/main",
-      "model": "kimi-k2.5",
+      "model": "step",
       "keywords": [],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
-        "step",
+        "kimi-k2.5",
         "Doubao-Seed-2.0-pro"
       ]
     },
@@ -48,7 +48,6 @@
       "prefix": "@write",
       "enabled": true,
       "fallback_models": [
-        "[特价]claude-opus-4-6",
         "Doubao-Seed-2.0-pro"
       ]
     },
@@ -56,14 +55,11 @@
       "name": "browser",
       "description": "浏览器操控 Agent，执行网页自动化任务",
       "endpoint": "http://localhost:3000/agents/browser",
-      "model": "[m]claude-sonnet-4-6-thinking",
+      "model": "kimi-k2.5",
       "keywords": ["打开网页", "浏览", "网站", "browser", "爬取"],
       "prefix": "@browser",
       "enabled": true,
       "fallback_models": [
-        "[薄甲逆]claude-sonnet-4-6",
-        "[特价]claude-sonnet-4-6",
-        "kimi-k2.5",
         "Doubao-Seed-2.0-pro"
       ]
     },
@@ -71,14 +67,11 @@
       "name": "planner",
       "description": "规划师，负责任务拆解和战略规划",
       "endpoint": "http://localhost:3000/agents/planner",
-      "model": "[特价]claude-opus-4-6-thinking",
+      "model": "gpt-5.4",
       "keywords": ["规划", "计划", "拆解", "plan", "战略"],
       "prefix": "@plan",
       "enabled": true,
       "fallback_models": [
-        "[薄甲逆]claude-opus-4-6-thinking",
-        "[cc量]claude-opus-4-6-thinking",
-        "gpt-5.4",
         "kimi-k2.5"
       ]
     },
@@ -86,14 +79,11 @@
       "name": "subagent-l1",
       "description": "一级子代理，执行调度员分配的具体任务",
       "endpoint": "http://localhost:3000/agents/subagent-l1",
-      "model": "[薄甲逆]claude-sonnet-4-6",
+      "model": "kimi-k2.5",
       "keywords": [],
       "prefix": "",
       "enabled": true,
       "fallback_models": [
-        "[特价]claude-sonnet-4-6",
-        "[m]claude-sonnet-4-6-thinking",
-        "kimi-k2.5",
         "Doubao-Seed-2.0-pro"
       ]
     },
@@ -113,26 +103,24 @@
       "name": "ops-a01",
       "description": "运营主bot，负责竞品情报和市场分析",
       "endpoint": "http://localhost:3000/agents/ops-a01",
-      "model": "kimi-k2.5",
+      "model": "deepseek-v3-2",
       "keywords": ["运营", "竞品", "情报", "市场", "yunying"],
       "prefix": "@yunying",
       "enabled": true,
       "fallback_models": [
-        "[cc量]claude-opus-4-6-thinking",
-        "deepseek-v3-2"
+        "kimi-k2.5"
       ]
     },
     {
       "name": "pur-01",
       "description": "采购主bot，负责供应商管理和采购流程",
       "endpoint": "http://localhost:3000/agents/pur-01",
-      "model": "kimi-k2.5",
+      "model": "deepseek-v3-2",
       "keywords": ["采购", "供应商", "进货", "caigou"],
       "prefix": "@caigou",
       "enabled": true,
       "fallback_models": [
-        "[特价]claude-opus-4-6",
-        "deepseek-v3-2"
+        "kimi-k2.5"
       ]
     },
     {
@@ -144,7 +132,6 @@
       "prefix": "@caiwu",
       "enabled": true,
       "fallback_models": [
-        "[cc量]claude-opus-4-6-thinking",
         "deepseek-v3-2"
       ]
     },
@@ -178,27 +165,23 @@
       "name": "coo-01",
       "description": "运营官，负责全局运营决策和跨部门协调",
       "endpoint": "http://localhost:3000/agents/coo-01",
-      "model": "kimi-k2.5",
+      "model": "Doubao-Seed-2.0-pro",
       "keywords": ["运营官", "coo", "决策", "协调"],
       "prefix": "@coo",
       "enabled": true,
       "fallback_models": [
-        "[薄甲逆]claude-sonnet-4-6",
-        "[特价]claude-sonnet-4-6",
-        "Doubao-Seed-2.0-pro"
+        "kimi-k2.5"
       ]
     },
     {
       "name": "dev-01",
       "description": "程序员bot，负责编码、调试和技术实现",
       "endpoint": "http://localhost:3000/agents/dev-01",
-      "model": "[特价]claude-opus-4-6-thinking",
+      "model": "gpt-5.4",
       "keywords": ["开发", "代码", "编程", "dev", "bug", "调试"],
       "prefix": "@dev",
       "enabled": true,
       "fallback_models": [
-        "[薄甲逆]claude-opus-4-6-thinking",
-        "gpt-5.4",
         "kimi-k2.5"
       ]
     }
