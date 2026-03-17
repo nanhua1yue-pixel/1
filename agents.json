@@ -4,10 +4,11 @@
       "name": "main",
       "description": "主调度员，负责全局任务分发和协调",
       "endpoint": "http://localhost:3000/agents/main",
-      "model": "kimi-k2.5",
+      "model": "doubao-1.5-pro-32k",
       "keywords": [],
       "prefix": "",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["kimi-k2.5", "deepseek-v3-2"]
     },
     {
       "name": "greet",
@@ -16,7 +17,8 @@
       "model": "doubao-1.5-lite-32k",
       "keywords": ["你好", "hello", "hi", "欢迎", "新人"],
       "prefix": "",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["doubao-seed-2-0-mini", "doubao-1.5-pro-32k"]
     },
     {
       "name": "search",
@@ -25,7 +27,8 @@
       "model": "gemini-3.1-pro",
       "keywords": ["搜索", "查找", "搜一下", "search", "查询"],
       "prefix": "@search",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["kimi-k2.5", "deepseek-v3-2"]
     },
     {
       "name": "writer",
@@ -34,7 +37,8 @@
       "model": "doubao-1.5-pro-32k",
       "keywords": ["写", "文案", "文档", "内容", "撰写", "文章"],
       "prefix": "@write",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["deepseek-v3-2", "kimi-k2.5"]
     },
     {
       "name": "browser",
@@ -43,7 +47,8 @@
       "model": "kimi-k2.5",
       "keywords": ["打开网页", "浏览", "网站", "browser", "爬取"],
       "prefix": "@browser",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["gemini-3.1-pro", "deepseek-v3-2"]
     },
     {
       "name": "planner",
@@ -52,16 +57,18 @@
       "model": "gpt-5.4",
       "keywords": ["规划", "计划", "拆解", "plan", "战略"],
       "prefix": "@plan",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["kimi-k2.5", "gemini-3.1-pro"]
     },
     {
       "name": "subagent-l1",
       "description": "一级子代理，执行调度员分配的具体任务",
       "endpoint": "http://localhost:3000/agents/subagent-l1",
-      "model": "kimi-k2.5",
+      "model": "doubao-1.5-pro-32k",
       "keywords": [],
       "prefix": "",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["kimi-k2.5", "deepseek-v3-2"]
     },
     {
       "name": "subagent-l2",
@@ -70,16 +77,18 @@
       "model": "doubao-seed-2-0-mini",
       "keywords": [],
       "prefix": "",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["doubao-1.5-lite-32k", "doubao-1.5-pro-32k"]
     },
     {
       "name": "ops-a01",
       "description": "运营主bot，负责竞品情报和市场分析",
       "endpoint": "http://localhost:3000/agents/ops-a01",
-      "model": "gemini-3.1-pro",
+      "model": "deepseek-v3-2",
       "keywords": ["运营", "竞品", "情报", "市场", "yunying"],
       "prefix": "@yunying",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["gemini-3.1-pro", "kimi-k2.5"]
     },
     {
       "name": "pur-01",
@@ -88,7 +97,8 @@
       "model": "deepseek-v3-2",
       "keywords": ["采购", "供应商", "进货", "caigou"],
       "prefix": "@caigou",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["doubao-1.5-pro-32k", "kimi-k2.5"]
     },
     {
       "name": "fin-03",
@@ -97,25 +107,28 @@
       "model": "deepseek-v3-2",
       "keywords": ["财务", "报表", "账单", "成本", "caiwu"],
       "prefix": "@caiwu",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["doubao-1.5-pro-32k", "kimi-k2.5"]
     },
     {
       "name": "hr-01",
       "description": "人事主bot，负责招聘、考勤和人员管理",
       "endpoint": "http://localhost:3000/agents/hr-01",
-      "model": "doubao-1.5-pro-32k",
+      "model": "doubao-1.5-lite-32k",
       "keywords": ["人事", "招聘", "考勤", "hr", "员工"],
       "prefix": "@hr",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["doubao-1.5-pro-32k", "doubao-seed-2-0-mini"]
     },
     {
       "name": "dsg-01",
       "description": "美工主bot，负责设计、图片和视觉相关任务",
       "endpoint": "http://localhost:3000/agents/dsg-01",
-      "model": "doubao-1.5-pro-32k",
+      "model": "doubao-1.5-lite-32k",
       "keywords": ["美工", "设计", "图片", "海报", "meigong"],
       "prefix": "@meigong",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["doubao-1.5-pro-32k", "kimi-k2.5"]
     },
     {
       "name": "coo-01",
@@ -124,7 +137,8 @@
       "model": "gpt-5.4",
       "keywords": ["运营官", "coo", "决策", "协调"],
       "prefix": "@coo",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["kimi-k2.5", "gemini-3.1-pro"]
     },
     {
       "name": "dev-01",
@@ -133,7 +147,8 @@
       "model": "kimi-k2.5",
       "keywords": ["开发", "代码", "编程", "dev", "bug", "调试"],
       "prefix": "@dev",
-      "enabled": true
+      "enabled": true,
+      "fallback_models": ["deepseek-v3-2", "gemini-3.1-pro"]
     }
   ]
 }

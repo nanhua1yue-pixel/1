@@ -28,6 +28,7 @@ class AgentConfig:
     keywords: list[str] = field(default_factory=list)  # 触发关键词
     prefix: str = ""  # 命令前缀，如 "@review"
     enabled: bool = True
+    fallback_models: list[str] = field(default_factory=list)  # 备用模型列表，主模型不可用时按顺序尝试
 
     def matches(self, text: str) -> bool:
         if not self.enabled:
@@ -49,6 +50,14 @@ class AgentConfig:
             return text[len(self.prefix) :].strip()
         return text
 
+    def all_models(self) -> list[str]:
+        """返回主模型 + 所有备用模型的有序列表"""
+        models = []
+        if self.model:
+            models.append(self.model)
+        models.extend(self.fallback_models)
+        return models
+
     def to_dict(self) -> dict:
         return {
             "name": self.name,
@@ -58,6 +67,7 @@ class AgentConfig:
             "keywords": self.keywords,
             "prefix": self.prefix,
             "enabled": self.enabled,
+            "fallback_models": self.fallback_models,
         }
 
     @classmethod
@@ -70,6 +80,7 @@ class AgentConfig:
             keywords=data.get("keywords", []),
             prefix=data.get("prefix", ""),
             enabled=data.get("enabled", True),
+            fallback_models=data.get("fallback_models", []),
         )
 
 
@@ -88,6 +99,12 @@ class AgentRouter:
             if agent.name == name:
                 return agent
         return None
+
+    def reload(self, config_path: Path = AGENTS_CONFIG_PATH) -> int:
+        """热重载 agents.json 配置，返回加载的 Agent 数量"""
+        self._agents = load_agents(config_path)
+        logger.info("热重载完成，当前 %d 个 Agent", len(self._agents))
+        return len(self._agents)
 
     # 内部 Agent，不参与用户消息路由，只由调度员内部调用
     INTERNAL_AGENTS = {"subagent-l1", "subagent-l2"}
@@ -145,6 +162,8 @@ class AgentRouter:
             line = f"- **{agent.name}**{model_info} — {agent.description}"
             if agent.prefix:
                 line += f"\n  命令: `{agent.prefix} <消息>`"
+            if agent.fallback_models:
+                line += f"\n  备用: {', '.join(f'`{m}`' for m in agent.fallback_models)}"
             return line
 
         lines = ["## Bot 列表\n"]

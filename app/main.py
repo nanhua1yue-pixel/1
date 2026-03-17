@@ -5,16 +5,37 @@
 
 from fastapi import FastAPI, Header, HTTPException, Request
 
+from app.agents import router as agent_router
 from app.config import settings
 from app.dingtalk import verify_signature
 from app.handlers import handle_message
+from app.health import tracker
 
-app = FastAPI(title="DingTalk-OpenClaw Webhook", version="0.1.0")
+app = FastAPI(title="DingTalk-OpenClaw Webhook", version="0.2.0")
 
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.get("/api/models/health")
+async def models_health():
+    """查看所有模型的健康状态"""
+    return {"models": tracker.all_status()}
+
+
+@app.get("/api/agents")
+async def list_agents():
+    """列出所有 Agent 配置"""
+    return {"agents": [a.to_dict() for a in agent_router.agents]}
+
+
+@app.post("/api/reload")
+async def reload_agents():
+    """热重载 agents.json"""
+    count = agent_router.reload()
+    return {"status": "ok", "agent_count": count}
 
 
 @app.post("/webhook/dingtalk")
