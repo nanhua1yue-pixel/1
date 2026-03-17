@@ -10,8 +10,9 @@ from app.config import settings
 from app.dingtalk import verify_signature
 from app.handlers import handle_message
 from app.health import tracker
+from app.providers import registry as provider_registry
 
-app = FastAPI(title="DingTalk-OpenClaw Webhook", version="0.2.0")
+app = FastAPI(title="DingTalk-OpenClaw Webhook", version="0.3.0")
 
 
 @app.get("/health")
@@ -31,11 +32,18 @@ async def list_agents():
     return {"agents": [a.to_dict() for a in agent_router.agents]}
 
 
+@app.get("/api/providers")
+async def list_providers():
+    """列出所有 API 供应商（隐藏 key）"""
+    return {"providers": provider_registry.all_providers()}
+
+
 @app.post("/api/reload")
-async def reload_agents():
-    """热重载 agents.json"""
-    count = agent_router.reload()
-    return {"status": "ok", "agent_count": count}
+async def reload_all():
+    """热重载 agents.json + providers.json"""
+    agent_count = agent_router.reload()
+    provider_count = provider_registry.reload()
+    return {"status": "ok", "agent_count": agent_count, "provider_count": provider_count}
 
 
 @app.post("/webhook/dingtalk")

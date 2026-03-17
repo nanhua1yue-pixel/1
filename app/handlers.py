@@ -12,6 +12,7 @@ from app.agents import AgentConfig, router as agent_router
 from app.config import settings
 from app.dingtalk import build_markdown_response, build_text_response
 from app.health import tracker
+from app.providers import registry as provider_registry
 
 logger = logging.getLogger(__name__)
 
@@ -89,8 +90,11 @@ def _handle_bots() -> dict:
 
 
 def _handle_reload() -> dict:
-    count = agent_router.reload()
-    return build_text_response(f"配置已重载，当前共 {count} 个 Agent")
+    agent_count = agent_router.reload()
+    provider_count = provider_registry.reload()
+    return build_text_response(
+        f"配置已重载: {agent_count} 个 Agent, {provider_count} 个供应商"
+    )
 
 
 def _handle_health() -> dict:
@@ -127,7 +131,7 @@ async def _forward_to_agent(agent: AgentConfig, text: str, sender: str, raw_data
     last_error = ""
     used_fallback = False
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         for i, model in enumerate(healthy_models):
             payload = {
                 "message": text,
@@ -137,6 +141,12 @@ async def _forward_to_agent(agent: AgentConfig, text: str, sender: str, raw_data
                 "model": model,
                 "raw": raw_data,
             }
+
+            # 附带供应商凭证，让 OpenClaw 知道用哪个 API
+            provider_info = provider_registry.lookup(model)
+            if provider_info:
+                payload["api_base"] = provider_info[0]
+                payload["api_key"] = provider_info[1]
 
             try:
                 resp = await client.post(agent.endpoint, json=payload)

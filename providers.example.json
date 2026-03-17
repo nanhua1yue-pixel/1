@@ -1,0 +1,28 @@
+{
+  "providers": {
+    "xigua": {
+      "name": "西瓜AI",
+      "api_base": "https://www.xiguaai6.com/v1",
+      "api_key": "sk-your-key-here",
+      "models": [
+        "gpt-5.4",
+        "[A优质]gemini-3.1-pro-preview-thinking",
+        "[特价]claude-sonnet-4-6",
+        "[特价]claude-opus-4-6",
+        "[特价]claude-opus-4-6-thinking"
+      ]
+    },
+    "bili": {
+      "name": "薄利API",
+      "api_base": "https://bl.api.chengminya.cn/v1",
+      "api_key": "sk-your-key-here",
+      "models": [
+        "[H2]claude-opus-4-6-thinking-fast",
+        "[薄甲逆]claude-opus-4-6-thinking",
+        "[ANT量]claude-opus-4-6-thinking",
+        "[cc量]claude-opus-4-6-thinking",
+        "[超稳]gemini-3-pro-preview-maxthinking"
+      ]
+    }
+  }
+}
