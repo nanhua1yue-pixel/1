@@ -73,13 +73,13 @@
       "name": "planner",
       "description": "规划师，负责任务拆解和战略规划",
       "endpoint": "http://localhost:3000/agents/planner",
-      "model": "[特价]claude-opus-4-6-thinking",
+      "model": "[m]claude-sonnet-4-6-thinking",
       "keywords": ["规划", "计划", "拆解", "plan", "战略"],
       "prefix": "@plan",
       "enabled": true,
       "fallback_models": [
-        "[薄甲逆]claude-opus-4-6-thinking",
-        "gpt-5.4",
+        "[薄甲逆]claude-sonnet-4-6",
+        "[特价]claude-sonnet-4-6",
         "kimi-k2.5"
       ]
     },
