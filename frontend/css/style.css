@@ -1,0 +1,204 @@
+/* ==================== 全局样式 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* ==================== 侧边栏 ==================== */
+.sidebar {
+    background-color: #1e293b;
+    overflow-y: auto;
+    border-right: none;
+}
+
+.logo {
+    padding: 20px 16px;
+    border-bottom: 1px solid #334155;
+}
+
+.logo h2 {
+    color: #f1f5f9;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.logo .subtitle {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.el-menu {
+    border-right: none !important;
+}
+
+/* ==================== 头部 ==================== */
+.header {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-bottom: 1px solid #e5e7eb;
+    height: 56px;
+}
+
+.page-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.header-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* ==================== 主内容区 ==================== */
+.main-content {
+    padding: 20px;
+    background: #f0f2f5;
+    overflow-y: auto;
+}
+
+/* ==================== 统计卡片 ==================== */
+.stat-cards {
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 8px 0;
+}
+
+.stat-card .el-card__body {
+    padding: 16px;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.stat-sub {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+.stat-card-warning .stat-number { color: #f59e0b; }
+.stat-card-danger .stat-number { color: #ef4444; }
+.stat-card-success .stat-number { color: #10b981; }
+.stat-card-info .stat-number { color: #3b82f6; }
+.stat-card-ok .stat-number { color: #10b981; }
+
+/* ==================== 筛选栏 ==================== */
+.filter-card {
+    margin-bottom: 16px;
+}
+
+.filter-card .el-card__body {
+    padding: 16px;
+}
+
+/* ==================== 批量操作栏 ==================== */
+.batch-bar {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ==================== 分页 ==================== */
+.pagination-wrap {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ==================== 影响分析卡片 ==================== */
+.impact-card {
+    margin-top: 16px;
+}
+
+/* ==================== 辅助 ==================== */
+.text-muted {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.el-table .cell {
+    font-size: 13px;
+}
+
+/* ==================== KPI评分表 ==================== */
+.kpi-section {
+    margin-bottom: 24px;
+}
+
+.kpi-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.kpi-section-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.kpi-section-score {
+    font-size: 20px;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+/* ==================== 提成计算 ==================== */
+.commission-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.commission-total {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    padding: 24px;
+}
+
+.commission-formula {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* 等级颜色 */
+.level-excellent { color: #10b981; }
+.level-good { color: #3b82f6; }
+.level-pass { color: #f59e0b; }
+.level-fail { color: #ef4444; }

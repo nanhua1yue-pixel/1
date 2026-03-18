@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>采购补货决策系统</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Element Plus CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-plus@2.5.0/dist/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.0/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-plus@2.5.0/dist/index.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-plus@2.5.0/dist/locale/zh-cn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <el-config-provider :locale="zhCn">
+            <el-container style="height: 100vh;">
+                <!-- 侧边栏 -->
+                <el-aside width="220px" class="sidebar">
+                    <div class="logo">
+                        <h2>采购补货决策</h2>
+                        <p class="subtitle">绩效考核系统</p>
+                    </div>
+                    <el-menu :default-active="activeMenu" @select="handleMenuSelect"
+                             background-color="#1e293b" text-color="#94a3b8" active-text-color="#60a5fa">
+                        <el-menu-item index="dashboard">
+                            <span>工作台</span>
+                        </el-menu-item>
+                        <el-sub-menu index="slow-moving">
+                            <template #title><span>滞销品管理</span></template>
+                            <el-menu-item index="slow-list">滞销品列表</el-menu-item>
+                            <el-menu-item index="slow-dashboard">处理进度</el-menu-item>
+                        </el-sub-menu>
+                        <el-sub-menu index="kpi">
+                            <template #title><span>绩效考核</span></template>
+                            <el-menu-item index="kpi-score">月度评分</el-menu-item>
+                            <el-menu-item index="kpi-commission">提成计算</el-menu-item>
+                            <el-menu-item index="kpi-history">历史记录</el-menu-item>
+                        </el-sub-menu>
+                        <el-sub-menu index="inventory">
+                            <template #title><span>库存监控</span></template>
+                            <el-menu-item index="inv-overview">库存总览</el-menu-item>
+                            <el-menu-item index="inv-stockout">缺货预警</el-menu-item>
+                        </el-sub-menu>
+                    </el-menu>
+                </el-aside>
+
+                <!-- 主区域 -->
+                <el-container>
+                    <el-header class="header">
+                        <div class="header-left">
+                            <span class="page-title">{{ pageTitle }}</span>
+                        </div>
+                        <div class="header-right">
+                            <el-tag :type="systemHealthType" size="large">
+                                系统完成率: {{ dashboardData.completion_rate || 0 }}%
+                            </el-tag>
+                            <el-tag type="info" size="large">
+                                考核周期: {{ currentPeriod }}
+                            </el-tag>
+                        </div>
+                    </el-header>
+
+                    <el-main class="main-content">
+                        <!-- ==================== 工作台 ==================== -->
+                        <div v-if="activeMenu === 'dashboard'" class="page-dashboard">
+                            <!-- 核心指标卡片 -->
+                            <el-row :gutter="16" class="stat-cards">
+                                <el-col :span="6">
+                                    <el-card shadow="hover" class="stat-card stat-card-warning">
+                                        <div class="stat-number">{{ dashboardData.total || 0 }}</div>
+                                        <div class="stat-label">滞销品总数</div>
+                                        <div class="stat-sub">待处理: {{ dashboardData.pending || 0 }}</div>
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-card shadow="hover" class="stat-card" :class="completionCardClass">
+                                        <div class="stat-number">{{ dashboardData.completion_rate || 0 }}%</div>
+                                        <div class="stat-label">系统处理完成率</div>
+                                        <div class="stat-sub">考核得分: {{ dashboardData.kpi_score || 0 }}/10</div>
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-card shadow="hover" class="stat-card stat-card-info">
+                                        <div class="stat-number">{{ dashboardData.completed || 0 }}</div>
+                                        <div class="stat-label">已完成处理</div>
+                                        <div class="stat-sub">处理中: {{ dashboardData.processing || 0 }}</div>
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-card shadow="hover" class="stat-card stat-card-success">
+                                        <div class="stat-number">{{ formatMoney(dashboardData.commission_amount) }}</div>
+                                        <div class="stat-label">预估提成(此项)</div>
+                                        <div class="stat-sub">最高700元</div>
+                                    </el-card>
+                                </el-col>
+                            </el-row>
+
+                            <!-- 预警信息 -->
+                            <el-alert v-if="dashboardData.completion_rate < 60"
+                                      title="铁律预警：滞销处理完成率不足60%，将触发额外扣分-10分！连续2月不足60%将取消B部分全部提成！"
+                                      type="error" :closable="false" show-icon style="margin-bottom: 16px;" />
+                            <el-alert v-else-if="dashboardData.completion_rate < 80"
+                                      title="提醒：完成率不足80%，过程行为系数将降为×0.9，影响全部提成"
+                                      type="warning" :closable="false" show-icon style="margin-bottom: 16px;" />
+
+                            <!-- 考核影响分析 -->
+                            <el-card shadow="never" class="impact-card">
+                                <template #header>
+                                    <span>系统完成率对绩效影响分析</span>
+                                </template>
+                                <el-table :data="impactData" stripe border>
+                                    <el-table-column prop="item" label="影响项" width="200" />
+                                    <el-table-column prop="standard" label="评分标准" />
+                                    <el-table-column prop="current" label="当前状态" width="150">
+                                        <template #default="{ row }">
+                                            <el-tag :type="row.type">{{ row.current }}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="value" label="影响金额/分值" width="150" />
+                                </el-table>
+                            </el-card>
+                        </div>
+
+                        <!-- ==================== 滞销品列表 ==================== -->
+                        <div v-if="activeMenu === 'slow-list'" class="page-slow-list">
+                            <!-- 筛选栏 -->
+                            <el-card shadow="never" class="filter-card">
+                                <el-form :inline="true" :model="filterForm">
+                                    <el-form-item label="状态">
+                                        <el-select v-model="filterForm.status" clearable placeholder="全部">
+                                            <el-option label="待处理" value="pending" />
+                                            <el-option label="处理中" value="processing" />
+                                            <el-option label="已完成" value="completed" />
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="退货决策">
+                                        <el-select v-model="filterForm.can_return" clearable placeholder="全部">
+                                            <el-option label="能退" value="yes" />
+                                            <el-option label="不能退" value="no" />
+                                            <el-option label="部分可退" value="partial" />
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="处置动作">
+                                        <el-select v-model="filterForm.action_type" clearable placeholder="全部">
+                                            <el-option label="退货" value="return" />
+                                            <el-option label="打折清仓" value="discount" />
+                                            <el-option label="搭配销售" value="bundle" />
+                                            <el-option label="调拨" value="transfer" />
+                                            <el-option label="报损" value="write_off" />
+                                            <el-option label="暂不处理" value="hold" />
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="搜索">
+                                        <el-input v-model="filterForm.keyword" placeholder="SKU/商品名/供应商"
+                                                  clearable @keyup.enter="loadSlowList" />
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button type="primary" @click="loadSlowList">查询</el-button>
+                                        <el-button @click="resetFilter">重置</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-card>
+
+                            <!-- 批量操作栏 -->
+                            <div class="batch-bar" v-if="selectedRows.length > 0">
+                                <span>已选择 {{ selectedRows.length }} 项</span>
+                                <el-button size="small" type="warning" @click="batchProcess('yes', 'return')">
+                                    批量标记-能退退货</el-button>
+                                <el-button size="small" type="info" @click="batchProcess('no', 'discount')">
+                                    批量标记-不能退打折</el-button>
+                                <el-button size="small" type="danger" @click="batchProcess('no', 'hold')">
+                                    批量标记-暂不处理</el-button>
+                            </div>
+
+                            <!-- 数据表格 -->
+                            <el-table :data="slowList" stripe border
+                                      @selection-change="handleSelectionChange"
+                                      v-loading="loading" style="width: 100%;">
+                                <el-table-column type="selection" width="45" />
+                                <el-table-column prop="sku_code" label="SKU编码" width="130" show-overflow-tooltip />
+                                <el-table-column prop="goods_name" label="商品名称" min-width="200" show-overflow-tooltip />
+                                <el-table-column prop="supplier" label="供应商" width="120" show-overflow-tooltip />
+                                <el-table-column prop="current_stock" label="库存数量" width="80" sortable />
+                                <el-table-column prop="stock_amount" label="库存金额" width="100" sortable>
+                                    <template #default="{ row }">
+                                        {{ formatMoney(row.stock_amount) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="monthly_sales_30d" label="30天销量" width="85" sortable />
+                                <el-table-column prop="stock_days" label="库存天数" width="85" sortable />
+                                <el-table-column prop="status" label="状态" width="85">
+                                    <template #default="{ row }">
+                                        <el-tag :type="statusType(row.status)" size="small">
+                                            {{ statusLabel(row.status) }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="can_return" label="退货决策" width="85">
+                                    <template #default="{ row }">
+                                        <el-tag v-if="row.can_return" :type="returnType(row.can_return)" size="small">
+                                            {{ returnLabel(row.can_return) }}
+                                        </el-tag>
+                                        <span v-else class="text-muted">未标记</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="action_type" label="处置动作" width="90">
+                                    <template #default="{ row }">
+                                        {{ actionLabel(row.action_type) || '-' }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="操作" width="160" fixed="right">
+                                    <template #default="{ row }">
+                                        <el-button v-if="row.status === 'pending'" size="small" type="primary"
+                                                   @click="openProcessDialog(row)">处理</el-button>
+                                        <el-button v-if="row.status === 'processing'" size="small" type="success"
+                                                   @click="openCompleteDialog(row)">完成</el-button>
+                                        <el-button size="small" @click="viewLogs(row)">日志</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+
+                            <!-- 分页 -->
+                            <div class="pagination-wrap">
+                                <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+                                               :total="slowTotal" :page-size="filterForm.page_size"
+                                               :current-page="filterForm.page"
+                                               :page-sizes="[20, 50, 100]"
+                                               @current-change="handlePageChange"
+                                               @size-change="handleSizeChange" />
+                            </div>
+                        </div>
+
+                        <!-- ==================== 滞销品处理进度 ==================== -->
+                        <div v-if="activeMenu === 'slow-dashboard'" class="page-slow-dashboard">
+                            <el-row :gutter="16">
+                                <el-col :span="8">
+                                    <el-card shadow="hover">
+                                        <template #header>处理进度</template>
+                                        <div id="chart-progress" style="height: 300px;"></div>
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-card shadow="hover">
+                                        <template #header>退货决策分布</template>
+                                        <div id="chart-return" style="height: 300px;"></div>
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-card shadow="hover">
+                                        <template #header>处置动作分布</template>
+                                        <div id="chart-action" style="height: 300px;"></div>
+                                    </el-card>
+                                </el-col>
+                            </el-row>
+
+                            <!-- 得分影响明细 -->
+                            <el-card shadow="never" style="margin-top: 16px;">
+                                <template #header>得分 & 提成影响</template>
+                                <el-descriptions :column="4" border>
+                                    <el-descriptions-item label="完成率">
+                                        {{ dashboardData.completion_rate }}%
+                                    </el-descriptions-item>
+                                    <el-descriptions-item label="考核得分">
+                                        {{ dashboardData.kpi_score }}/10分
+                                    </el-descriptions-item>
+                                    <el-descriptions-item label="提成金额">
+                                        {{ formatMoney(dashboardData.commission_amount) }}
+                                    </el-descriptions-item>
+                                    <el-descriptions-item label="行为系数">
+                                        {{ dashboardData.score_detail?.behavior_coefficient || 1.0 }}
+                                    </el-descriptions-item>
+                                </el-descriptions>
+                            </el-card>
+                        </div>
+
+                        <!-- ==================== 月度评分 ==================== -->
+                        <div v-if="activeMenu === 'kpi-score'" class="page-kpi-score">
+                            <el-card shadow="never">
+                                <template #header>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                                        <span>采购主管月度绩效考核表（{{ currentPeriod }}）</span>
+                                        <el-button type="primary" @click="calculateKPI">计算评分</el-button>
+                                    </div>
+                                </template>
+                                <kpi-score-form ref="kpiForm" :kpi-data="kpiData" @save="saveKPI" />
+                            </el-card>
+                        </div>
+
+                        <!-- ==================== 提成计算 ==================== -->
+                        <div v-if="activeMenu === 'kpi-commission'" class="page-commission">
+                            <el-card shadow="never">
+                                <template #header>
+                                    <span>采购主管提成计算（{{ currentPeriod }}）</span>
+                                </template>
+                                <commission-calculator :commission-data="commissionData" />
+                            </el-card>
+                        </div>
+                    </el-main>
+                </el-container>
+            </el-container>
+
+            <!-- ==================== 处理弹窗 ==================== -->
+            <el-dialog v-model="processDialogVisible" title="处理滞销品" width="600px">
+                <el-form :model="processForm" label-width="100px">
+                    <el-form-item label="SKU编码">
+                        <span>{{ processForm.sku_code }} - {{ processForm.goods_name }}</span>
+                    </el-form-item>
+                    <el-form-item label="库存信息">
+                        <span>数量: {{ processForm.current_stock }} | 金额: {{ formatMoney(processForm.stock_amount) }} | 30天销量: {{ processForm.monthly_sales_30d }}</span>
+                    </el-form-item>
+                    <el-divider />
+                    <el-form-item label="能否退货" required>
+                        <el-radio-group v-model="processForm.can_return">
+                            <el-radio value="yes">能退</el-radio>
+                            <el-radio value="no">不能退</el-radio>
+                            <el-radio value="partial">部分可退</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="退/不退原因">
+                        <el-input v-model="processForm.return_reason" type="textarea" :rows="2"
+                                  placeholder="说明退货/不能退的原因" />
+                    </el-form-item>
+                    <el-form-item label="处置动作" required>
+                        <el-select v-model="processForm.action_type" placeholder="选择处置动作">
+                            <el-option label="退货给供应商" value="return" />
+                            <el-option label="打折清仓" value="discount" />
+                            <el-option label="搭配销售" value="bundle" />
+                            <el-option label="调拨到其他渠道" value="transfer" />
+                            <el-option label="报损处理" value="write_off" />
+                            <el-option label="暂不处理(需说明)" value="hold" />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="动作详情">
+                        <el-input v-model="processForm.action_detail" type="textarea" :rows="2"
+                                  placeholder="具体的处置计划和执行步骤" />
+                    </el-form-item>
+                    <el-form-item label="截止日期">
+                        <el-date-picker v-model="processForm.action_deadline" type="date"
+                                        placeholder="处置截止日期" value-format="YYYY-MM-DD" />
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <el-button @click="processDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="submitProcess" :loading="submitting">确认处理</el-button>
+                </template>
+            </el-dialog>
+
+            <!-- 完成弹窗 -->
+            <el-dialog v-model="completeDialogVisible" title="标记处理完成" width="500px">
+                <el-form :model="completeForm" label-width="100px">
+                    <el-form-item label="SKU">
+                        <span>{{ completeForm.sku_code }}</span>
+                    </el-form-item>
+                    <el-form-item label="实际退货金额">
+                        <el-input-number v-model="completeForm.actual_return_amount" :min="0" :precision="2" />
+                    </el-form-item>
+                    <el-form-item label="清仓回款">
+                        <el-input-number v-model="completeForm.actual_clear_amount" :min="0" :precision="2" />
+                    </el-form-item>
+                    <el-form-item label="结果备注">
+                        <el-input v-model="completeForm.result_note" type="textarea" :rows="2" />
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <el-button @click="completeDialogVisible = false">取消</el-button>
+                    <el-button type="success" @click="submitComplete" :loading="submitting">确认完成</el-button>
+                </template>
+            </el-dialog>
+
+            <!-- 日志弹窗 -->
+            <el-dialog v-model="logDialogVisible" title="操作日志" width="700px">
+                <el-table :data="logList" stripe>
+                    <el-table-column prop="created_at" label="时间" width="170" />
+                    <el-table-column prop="operator" label="操作人" width="90" />
+                    <el-table-column prop="action" label="操作" width="100" />
+                    <el-table-column prop="new_value" label="变更内容" show-overflow-tooltip />
+                    <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+                </el-table>
+            </el-dialog>
+        </el-config-provider>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
