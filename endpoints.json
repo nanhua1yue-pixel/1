@@ -1,0 +1,31 @@
+{
+  "internal": {
+    "host": "118.89.58.101",
+    "port": 8901,
+    "routes": {
+      "home": "/",
+      "ceo": "/ceo",
+      "boss": "/boss",
+      "ops": "/ops",
+      "procurement": "/procurement",
+      "capital": "/capital",
+      "overview": "/overview",
+      "operations": "/operations",
+      "search": "/search"
+    }
+  },
+  "public": {
+    "domain": "feisijia123.cn",
+    "routes": {
+      "brand_story": "/about/",
+      "brand_story_admin": "/about/?admin=1",
+      "mall": "/"
+    }
+  },
+  "security": {
+    "internal_port_only": true,
+    "public_internal_routes_blocked": true,
+    "ip_port80_internal_routes_blocked": true,
+    "notes": "All internal admin pages are only accessible via IP:8901. Public domain and IP:80 return 404 for internal routes."
+  }
+}
