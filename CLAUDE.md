@@ -55,7 +55,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - "做完了"必须给可验证证据
 - 汇报 4 项:**做了什么 / 怎么验证 / 下一步 / 要用户决策什么(业务语言)**
-- 不自动 commit/push/发布,不动生产
+- 不自动 commit/push/发布,不动生产(**例外**:仓库的 stop hook 强制 commit/push 时,hook 优先,按 hook 走)
 - 同一问题 3 次解决不了 → 停下问
 - 每 5 步回钩:最初目标、现在哪、有没有偏
 - 用户说停立刻停
